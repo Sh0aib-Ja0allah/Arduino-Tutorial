@@ -1,0 +1,17 @@
+
+const int LEDBuzzer = 10;
+String msg = "LED is on.";
+
+void setup() {
+  pinMode(LEDBuzzer, OUTPUT);
+  Serial.begin(9600);
+}
+
+
+void loop() {
+  digitalWrite(LEDBuzzer, HIGH);
+  delay(500);
+  Serial.println(msg);
+  digitalWrite(LEDBuzzer, LOW);
+  delay(500);
+}

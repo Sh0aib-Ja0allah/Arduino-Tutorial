@@ -1,0 +1,91 @@
+#include <TM1637Display.h>
+
+// Define the pins for the TM1637 display
+#define CLK_PIN 2
+#define DIO_PIN 3
+
+// Define the pins for the HC-SR04 sensor
+const int trigPin = 7;
+const int echoPin = 6;
+
+// Define the pins for the LEDs
+const int greenLEDPin = 9;
+const int yellowLEDPin = 10;
+const int redLEDPin = 11;
+
+// Define the pin for the active buzzer
+const int buzzerPin = 8;
+
+// Create a TM1637Display object
+TM1637Display display(CLK_PIN, DIO_PIN);
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(9600);
+
+  // Initialize the TM1637 display
+  display.setBrightness(0x0f);  // Set the brightness (0x0f is the maximum)
+
+  // Define the trigPin as an OUTPUT
+  pinMode(trigPin, OUTPUT);
+  
+  // Define the echoPin as an INPUT
+  pinMode(echoPin, INPUT);
+
+  // Define the buzzerPin as an OUTPUT
+  pinMode(buzzerPin, OUTPUT);
+
+  // Define the LED pins as OUTPUT
+  pinMode(greenLEDPin, OUTPUT);
+  pinMode(yellowLEDPin, OUTPUT);
+  pinMode(redLEDPin, OUTPUT);
+}
+
+void loop() {
+  // Clear the trigPin to ensure a clean pulse
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  // Set the trigPin to HIGH for 10 microseconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Read the echoPin, which measures the time for the sound wave to bounce back
+  long duration = pulseIn(echoPin, HIGH);
+
+  // Calculate the distance in centimeters
+  int distanceCM = duration / 58;
+
+  // Display the distance on the TM1637 display
+  display.showNumberDec(distanceCM);
+
+  // Control the LEDs based on the distance
+  if (distanceCM > 100) {
+    digitalWrite(greenLEDPin, HIGH);
+    digitalWrite(yellowLEDPin, LOW);
+    digitalWrite(redLEDPin, LOW);
+
+    digitalWrite(buzzerPin, LOW);
+  } else if (distanceCM > 25 && 60 > distanceCM) {
+    digitalWrite(greenLEDPin, LOW);
+    digitalWrite(yellowLEDPin, HIGH);
+    digitalWrite(redLEDPin, LOW);
+
+    digitalWrite(buzzerPin, LOW);
+  } else {
+    digitalWrite(greenLEDPin, LOW);
+    digitalWrite(yellowLEDPin, LOW);
+    digitalWrite(redLEDPin, HIGH);
+
+    digitalWrite(buzzerPin, HIGH);
+  }
+
+  // Print the distance to the serial monitor
+  Serial.print("Distance: ");
+  Serial.print(distanceCM);
+  Serial.println(" cm");
+
+  // Repeat this process every 2 seconds:
+  delay(2000);
+}

@@ -1,0 +1,47 @@
+
+//  you should install the TM1637 library in your Arduino IDE. Here's how:
+//  Open the Arduino IDE.
+//  Go to "Sketch" > "Include Library" > "Manage Libraries..."
+//  In the Library Manager, type "TM1637" in the search box.
+//  Install the "TM1637" library by avishorp.
+
+#include <TM1637Display.h>
+
+// Define the pins for the TM1637 module
+#define CLK_PIN 3
+#define DIO_PIN 2
+
+TM1637Display display(CLK_PIN, DIO_PIN);
+
+void setup() {
+  // Initialize the display
+  display.setBrightness(7);  // You can adjust the brightness (0 to 7)
+}
+
+void loop() {
+  // Display "1234" on the 4-digit display
+   int8_t numbers[] = {6, 91, 79, 102};            // numbers => 1 2 3 4 in integer
+   
+   uint8_t number[] = {
+    SEG_B | SEG_C,                                //  1  
+    SEG_A | SEG_B | SEG_D | SEG_E | SEG_G,        //  2
+    SEG_A | SEG_B | SEG_C | SEG_D | SEG_G,        //  3
+    SEG_B | SEG_C | SEG_F | SEG_G,                //  4
+    };            // numbers => 1 2 3 4 in integer
+
+  const uint8_t SEG_HIGH[] = {
+  SEG_B | SEG_C | SEG_E | SEG_F | SEG_G,           // H
+  SEG_E | SEG_F,                                   // I
+  SEG_A | SEG_B | SEG_C | SEG_D | SEG_F | SEG_G,   // G
+  SEG_B | SEG_C | SEG_E | SEG_F | SEG_G            // H
+  };
+
+  int8_t hex[] = {0X76, 0X30, 0X6F, 0X76};             // HIGH in HEX 
+  
+  int8_t data[] = {118, 48, 111, 118};             // HIGH in integer 
+
+  display.setSegments(hex);
+  delay(1000);  // Display for 1 second
+  display.clear();  // Clear the display
+  delay(1000);  // Wait for 1 second
+}
